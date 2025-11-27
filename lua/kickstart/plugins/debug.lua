@@ -22,40 +22,39 @@ return {
     'jay-babu/mason-nvim-dap.nvim',
 
     -- Add your own debuggers here
-    'leoluz/nvim-dap-go',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
     {
-      '<F5>',
+      '<leader>dn',
       function()
         require('dap').continue()
       end,
       desc = 'Debug: Start/Continue',
     },
     {
-      '<F1>',
+      '<leader>di',
       function()
         require('dap').step_into()
       end,
       desc = 'Debug: Step Into',
     },
     {
-      '<F2>',
+      '<leader>dj',
       function()
         require('dap').step_over()
       end,
       desc = 'Debug: Step Over',
     },
     {
-      '<F3>',
+      '<leader>do',
       function()
         require('dap').step_out()
       end,
       desc = 'Debug: Step Out',
     },
     {
-      '<leader>b',
+      '<leader>bb',
       function()
         require('dap').toggle_breakpoint()
       end,
@@ -70,7 +69,7 @@ return {
     },
     -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     {
-      '<F7>',
+      '<leader>D',
       function()
         require('dapui').toggle()
       end,
@@ -94,7 +93,6 @@ return {
       -- online, please don't ask me how to install them :)
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
-        'delve',
       },
     }
 
@@ -121,28 +119,140 @@ return {
     }
 
     -- Change breakpoint icons
-    -- vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
-    -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
-    -- local breakpoint_icons = vim.g.have_nerd_font
-    --     and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
-    --   or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
-    -- for type, icon in pairs(breakpoint_icons) do
-    --   local tp = 'Dap' .. type
-    --   local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
-    --   vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
-    -- end
+    vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
+    vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
+    local breakpoint_icons = vim.g.have_nerd_font
+        and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
+      or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
+    for type, icon in pairs(breakpoint_icons) do
+      local tp = 'Dap' .. type
+      local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
+      vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
+    end
 
+    -- -- gdb config
+    -- dap.adapters.gdb = {
+    --   type = 'executable',
+    --   command = 'gdb',
+    --   args = { '--interpreter=dap', '--eval-command', 'set print pretty on' },
+    -- }
+    --
+    -- dap.configurations.c = {
+    --   {
+    --     name = 'Launch',
+    --     type = 'gdb',
+    --     request = 'launch',
+    --     program = function()
+    --       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    --     end,
+    --     cwd = '${workspaceFolder}',
+    --     stopAtBeginningOfMainSubprogram = false,
+    --   },
+    --   {
+    --     name = 'Select and attach to process',
+    --     type = 'gdb',
+    --     request = 'attach',
+    --     program = function()
+    --       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    --     end,
+    --     pid = function()
+    --       local name = vim.fn.input 'Executable name (filter): '
+    --       return require('dap.utils').pick_process { filter = name }
+    --     end,
+    --     cwd = '${workspaceFolder}',
+    --   },
+    --   {
+    --     name = 'Attach to gdbserver :1234',
+    --     type = 'gdb',
+    --     request = 'attach',
+    --     target = 'localhost:1234',
+    --     program = function()
+    --       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    --     end,
+    --     cwd = '${workspaceFolder}',
+    --   },
+    -- }
+    dap.adapters.lldb = {
+      type = 'executable',
+      command = '/usr/bin/lldb-dap', -- adjust as needed, must be absolute path
+      name = 'lldb',
+    }
+    dap.configurations.c = {
+      {
+        name = 'Launch',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+
+        -- 💀
+        -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+        --
+        --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+        --
+        -- Otherwise you might get the following error:
+        --
+        --    Error on launch: Failed to attach to the target process
+        --
+        -- But you should be aware of the implications:
+        -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+        -- runInTerminal = false,
+      },
+    }
+    dap.configurations.rust = {
+      {
+        name = 'Launch',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+
+        initCommands = function()
+          -- Find out where to look for the pretty printer Python module.
+          local rustc_sysroot = vim.fn.trim(vim.fn.system 'rustc --print sysroot')
+          assert(vim.v.shell_error == 0, 'failed to get rust sysroot using `rustc --print sysroot`: ' .. rustc_sysroot)
+          local script_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py'
+          local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
+
+          -- The following is a table/list of lldb commands, which have a syntax
+          -- similar to shell commands.
+          --
+          -- To see which command options are supported, you can run these commands
+          -- in a shell:
+          --
+          --   * lldb --batch -o 'help command script import'
+          --   * lldb --batch -o 'help command source'
+          --
+          -- Commands prefixed with `?` are quiet on success (nothing is written to
+          -- debugger console if the command succeeds).
+          --
+          -- Prefixing a command with `!` enables error checking (if a command
+          -- prefixed with `!` fails, subsequent commands will not be run).
+          --
+          -- NOTE: it is possible to put these commands inside the ~/.lldbinit
+          -- config file instead, which would enable rust types globally for ALL
+          -- lldb sessions (i.e. including those run outside of nvim). However,
+          -- that may lead to conflicts when debugging other languages, as the type
+          -- formatters are merely regex-matched against type names. Also note that
+          -- .lldbinit doesn't support the `!` and `?` prefix shorthands.
+          return {
+            ([[!command script import '%s']]):format(script_file),
+            ([[command source '%s']]):format(commands_file),
+          }
+        end,
+        -- ...,
+      },
+    }
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
-
-    -- Install golang specific config
-    require('dap-go').setup {
-      delve = {
-        -- On Windows delve must be run attached or it crashes.
-        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-        detached = vim.fn.has 'win32' == 0,
-      },
-    }
   end,
 }
