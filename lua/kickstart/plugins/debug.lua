@@ -26,7 +26,7 @@ return {
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
     {
-      '<leader>dn',
+      '<leader>ds',
       function()
         require('dap').continue()
       end,
@@ -54,7 +54,7 @@ return {
       desc = 'Debug: Step Out',
     },
     {
-      '<leader>bb',
+      '<leader>db',
       function()
         require('dap').toggle_breakpoint()
       end,

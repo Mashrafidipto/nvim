@@ -25,7 +25,7 @@ return {
 
       require('mini.diff').setup()
       require('mini.git').setup()
-      -- require('mini.notify').setup()
+      require('mini.notify').setup()
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       local hipatterns = require 'mini.hipatterns'

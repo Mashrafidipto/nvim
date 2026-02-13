@@ -158,9 +158,9 @@ return {
           --
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
+            -- map('<leader>th', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            -- end, '[T]oggle Inlay [H]ints')
           end
         end,
       })
@@ -209,15 +209,37 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      vim.lsp.config('zls', {
+        settings = {
+          zls = {
+
+            enable_build_on_save = true,
+          },
+        },
+      })
+
+      vim.lsp.enable 'zls'
+      vim.lsp.enable 'clangd'
+      vim.lsp.enable 'rust_analyzer'
+
       local servers = {
         -- clangd = {},
         -- ccls = {},
         -- gopls = {},
-        pyright = {},
-        rust_analyzer = {},
-        zls = {
-          enable_build_on_save = true,
+        gopls = {
+          analyses = {
+            unusedparams = true,
+          },
+          staticcheck = true,
+          gofumpt = true,
         },
+        -- rust_analyzer = {},
+
+        -- zls = {
+        --   cmd = { '/usr/bin/zls' },
+        --   enable_build_on_save = true,
+        -- },
+
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:

@@ -18,6 +18,7 @@ return {
         'query',
         'vim',
         'vimdoc',
+        'zig',
       },
       -- autoinstall languages that are not installed
       auto_install = true,
