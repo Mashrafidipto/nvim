@@ -26,6 +26,17 @@ return {
       require('mini.diff').setup()
       require('mini.git').setup()
       -- require('mini.notify').setup()
+      -- require('mini.map').setup()
+      -- require('mini.extra').setup()
+
+      local map = require 'mini.map'
+      map.setup {
+        integrations = {
+          map.gen_integration.builtin_search(),
+          map.gen_integration.diff(),
+          map.gen_integration.diagnostic(),
+        },
+      }
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       local hipatterns = require 'mini.hipatterns'
