@@ -72,12 +72,4 @@ vim.keymap.set('i', '<C-c>', '<ESC>')
 vim.keymap.set('t', '<A-u>', '<cmd>ToggleTerm direction=float<CR>', { desc = 'Terminal' })
 vim.keymap.set('n', '<A-u>', '<cmd>ToggleTerm direction=float<CR>', { desc = 'Terminal' })
 
-vim.keymap.set('n', '<leader>u', "<cmd>lua  require('undotree').toggle()<cr>", { desc = 'Undo tree' })
--- vim.keymap.set('n', '<leader>u', '<cmd>lua require('undotree').toggle()<cr>', { desc = 'Undo tree' })
-
--- vim.keymap.set('n', 'jj', 'jzz')
--- vim.keymap.set('n', 'kk', 'kzz')
--- vim.keymap.set('n', '<A-u>', '<cmd>terminal<CR>i', { desc = 'Terminal' })
--- vim.keymap.set('t', '<A-u>', '<cmd>bd!<CR>', { desc = 'Terminal' })
--- Key mappings
--- vim.keymap.set("i", "<S-Tab>", "<C-o>$")
+vim.keymap.set('n', '<leader>u', require('undotree').open, { desc = 'undotree' })

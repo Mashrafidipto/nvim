@@ -51,7 +51,9 @@ require('lazy').setup({
   require 'custom.plugins.tabout',
   require 'custom.plugins.flash',
   require 'custom.plugins.noice',
-  require 'custom.plugins.undotree',
+  require 'custom.plugins.iron',
+  -- require 'custom.plugins.undotree',
+
   -- require 'custom.plugins.orgmode-nvim',
   -- require 'custom.plugins.tab_new_keys',
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the

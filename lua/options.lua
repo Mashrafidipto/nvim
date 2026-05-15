@@ -52,7 +52,8 @@ vim.opt.splitbelow = true
 --  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
+-- fold
+vim.opt.foldenable = false
 --fixing tabs
 vim.opt.tabstop = 8
 vim.opt.softtabstop = 8
@@ -74,6 +75,8 @@ vim.opt.showbreak = '>> '
 
 --theme
 -- vim.cmd [[colorscheme alabaster]]
+vim.cmd 'packadd nvim.undotree'
+vim.cmd 'packadd nvim.difftool'
 
 -- views can only be fully collapsed with the global statusline
 -- vim.opt.laststatus = 0

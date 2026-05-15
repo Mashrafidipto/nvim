@@ -27,7 +27,7 @@ return {
 
         -- check if treesitter indentation is available for this language, and if so enable it
         -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
-        local has_indent_query = vim.treesitter.query.get(language, 'indent') ~= nil
+        local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
 
         if vim.treesitter.query.get(language, 'folds') then
           vim.wo.foldmethod = 'expr'
